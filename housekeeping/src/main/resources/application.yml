@@ -1,0 +1,24 @@
+server:
+  port: 8086
+spring:
+  #通用的数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf-8&userSSL=true&serverTimezone=UTC
+    username: root
+    password: 123456
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+
+#整合mybatis
+mybatis:
+  #加载实体类
+  type-aliases-package: com.zjz.housekeeping
+  #映射文件
+  mapper-locations: mapper/*Mapper.xml
+  #输出日志
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

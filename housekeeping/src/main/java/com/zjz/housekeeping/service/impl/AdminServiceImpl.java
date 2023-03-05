@@ -32,13 +32,26 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void update(Admin admin) {
+    public ResultVO update(Admin admin) {
+//        如果账号不存在
+        ResultVO adm = queryById(admin.getAdminId());
+        if(adm.getCode()==201)
+            return new ResultVO(ResultEnum.UPDATE_FAIL,adm.getData());
+        else {
+            adminDao.update(admin);
+            return new ResultVO(ResultEnum.UPDATE_SUCCESS,adm.getData());
+        }
+
 
     }
 
     @Override
-    public Admin queryId(Integer id) {
-        return null;
+    public ResultVO queryById(Integer id) {
+        Admin res = adminDao.queryById(id);
+        if(res == null )
+            return new ResultVO(ResultEnum.FAIL,"该账号不存在");
+        else
+            return new ResultVO(ResultEnum.SUCCESS,adminDao.queryById(id));
     }
 
     @Override

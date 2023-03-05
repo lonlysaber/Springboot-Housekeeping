@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjz.housekeeping.dao.KeeperDao">
+    <resultMap id="keeperMap" type="com.zjz.housekeeping.module.entity.Keeper">
+        <id property="keeperId" column="keeperId"/>
+        <result property="keeperName" column="keeperName"/>
+        <result property="keeperPhone" column="keeperPhone"/>
+        <result property="keeperGender" column="keeperGender"/>
+        <result property="keeperAvatar" column="keeperAvatar"/>
+        <result property="keeperType" column="keeperType"/>
+        <result property="keeperPwd" column="keeperPwd"/>
+        <result property="star" column="star"/>
+        <result property="appointment" column="appointment"/>
+        <result property="age" column="age"/>
+        <result property="nativePlace" column="nativePlace"/>
+        <result property="feature" column="feature"/>
+        <result property="introduce" column="introduce"/>
+        <result property="years" column="years"/>
+        <result property="regTime" column="regTime"/>
+    </resultMap>
+
+    <!--    <resultMap id="keeperDtoMap" extends="keeperMap" type="com.zjz.housekeeping.module.dto.KeeperDto">-->
+    <!--        <result column="search" property="search"/>-->
+    <!--        <result column="browse" property="browse"/>-->
+    <!--        <result column="consume" property="consume"/>-->
+    <!--    </resultMap>-->
+
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="Keeper">
+        insert into tb_keeper
+        values (#{keeperId}, #{keeperName}, #{keeperPhone}, #{keeperGender}, #{keeperAvatar},#{keeperType},
+                #{keeperPwd}, #{star}, #{appointment}, #{age}, #{nativePlace}, #{feature}, #{introduce},
+                #{years},  #{regTime})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="int">
+        delete
+        from tb_keeper
+        where keeperId = #{keeperId}
+    </delete>
+
+    <!-- sql语句    -->
+    <sql id="selectActive">
+        <where>
+        <if test="keeperId != null">
+            k.keeperId = #{keeperId}
+        </if>
+        <if test="keeperName != null">
+            and k.keeperName like
+            concat('%',#{keeperName},'%')
+        </if>
+        <if test="keeperPhone != null">
+            and k.keeperPhone =#{keeperPhone}
+        </if>
+        <if test="keeperGender != null">
+            and k.keeperGender = #{keeperGender}
+        </if>
+        <if test="keeperPwd != null">
+            and k.keeperPwd like
+            concat('%',#{keeperPwd},'%')
+        </if>
+        <if test="star != null">
+            and k.star like
+            concat('%',#{star},'%')
+        </if>
+        <if test="appointment != null">
+            and k.appointment like
+            concat('%',#{appointment},'%')
+        </if>
+        <if test="age != null">
+            and k.age like
+            concat('%',#{age},'%')
+        </if>
+        <if test="nativePlace != null">
+            and k.nativePlace like
+            concat('%',#{nativePlace},'%')
+        </if>
+        <if test="feature != null">
+            and k.feature like
+            concat('%',#{feature},'%')
+        </if>
+        <if test="introduce != null">
+            and k.introduce like
+            concat('%',#{introduce},'%')
+        </if>
+        <if test="years != null">
+            and k.years like
+            concat('%',#{years},'%')
+        </if>
+        </where>
+    </sql>
+
+    <!-- 动态修改 -->
+    <update id="update" parameterType="Keeper">
+        update tb_keeper k
+        <set>
+            <if test="keeperId != null">
+                k.keeperId = #{keeperId}
+            </if>
+            <if test="keeperName != null">
+                and k.keeperName = #{keeperName}
+            </if>
+            <if test="keeperPhone != null">
+                and k.keeperPhone =#{keeperPhone}
+            </if>
+            <if test="keeperGender != null">
+                and k.keeperGender = #{keeperGender}
+            </if>
+            <if test="keeperPwd != null">
+                and k.keeperPwd = #{keeperPwd}
+            </if>
+            <if test="star != null">
+                and k.star = #{star}
+            </if>
+            <if test="appointment != null">
+                and k.appointment = #{appointment}
+            </if>
+            <if test="age != null">
+                and k.age like = #{age}
+            </if>
+            <if test="nativePlace != null">
+                and k.nativePlace like = #{nativePlace}
+            </if>
+            <if test="feature != null">
+                and k.feature = #{feature}
+            </if>
+            <if test="introduce != null">
+                and k.introduce = #{introduce}
+            </if>
+            <if test="years != null">
+                and k.years like = #{years}
+            </if>
+        </set>
+        where k.keeperId = #{keeperId}
+    </update>
+
+    <!-- Id查询 -->
+    <select id="queryById" parameterType="Keeper" resultMap="keeperMap">
+        select *
+        from tb_keeper k
+        where k.keeperId = #{keeperId}
+    </select>
+
+    <!-- 动态模糊查询 -->
+    <select id="queryCondition" parameterType="Keeper" resultMap="keeperMap">
+        select * from tb_keeper k
+        <!-- 查询条件 -->
+        <include refid="selectActive"/>
+    </select>
+
+    <!-- 分页 -->
+    <select id="queryBySelectActive" resultMap="keeperMap">
+        select * from tb_keeper
+        <include refid="selectActive"/>
+        <!-- 分页-->
+        <if test="currentPage != null and pageSize != null">
+            <bind name="start" value="(currentPage - 1) * pageSize"/>
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+
+    <select id="countBySelectActive" resultType="int">
+        select count(1) from tb_keeper
+        <include refid="selectActive"/>
+    </select>
+
+    <!-- 用户推荐 -->
+
+    <!--    <select id="getCollectCategory" resultType="int">-->
+    <!--        select g.categoryId-->
+    <!--        from tb_keeper u-->
+    <!--                 LEFT JOIN tb_collect c ON (k.keeperId = c.keeperId)-->
+    <!--                 LEFT JOIN tb_product p ON (c.productId = p.productId)-->
+    <!--                 LEFT OUTER JOIN tb_category g ON (p.categoryId = g.categoryId)-->
+    <!--        where c.keeperId = #{keeperId}-->
+    <!--          and c.productId = p.productId-->
+    <!--    </select>-->
+
+
+    <!--    <select id="getCartCategory" resultType="int">-->
+    <!--        select g.categoryId-->
+    <!--        from tb_keeper u-->
+    <!--                 LEFT JOIN tb_cart c ON (k.keeperId = c.keeperId)-->
+    <!--                 LEFT JOIN tb_product p ON (c.productId = p.productId)-->
+    <!--                 LEFT OUTER JOIN tb_category g ON (p.categoryId = g.categoryId)-->
+    <!--        where c.keeperId = #{keeperId}-->
+    <!--          and c.productId = p.productId-->
+    <!--    </select>-->
+
+
+    <!--    <select id="getKeeperRecommend" parameterType="int" resultMap="keeperDtoMap">-->
+    <!--        select k.*-->
+    <!--        from tb_keeper u-->
+    <!--                 LEFT JOIN tb_collect c ON (k.keeperId = c.keeperId)-->
+    <!--                 LEFT JOIN tb_product p ON (c.productId = p.productId)-->
+    <!--                 LEFT JOIN tb_img i ON (p.imgId = i.imgId)-->
+    <!--        where k.keeperId = #{keeperId}-->
+    <!--    </select>-->
+
+</mapper>

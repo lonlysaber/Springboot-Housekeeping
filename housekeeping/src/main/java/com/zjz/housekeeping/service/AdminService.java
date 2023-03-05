@@ -10,9 +10,9 @@ public interface AdminService {
 
     ResultVO delete(Integer id);
 
-    void update(Admin admin);
+    ResultVO update(Admin admin);
 
-    Admin queryId(Integer id);
+    ResultVO queryById(Integer id);
 
     List<Admin> queryCodition(Admin admin);
 

@@ -18,15 +18,16 @@ public class Keeper {
     private Integer keeperId;
     private String keeperName;
     private String keeperPhone;
+    private String keeperGender;
     private String keeperAvatar;
     private String keeperType;
     private String keeperPwd;
-    private String star;
+    private Integer star;
     private String appointment;
     private Integer age;
     private String nativePlace;
     private String feature;
     private String introduce;
-    private String years;
+    private Integer years;
     private Date regTime;
 }

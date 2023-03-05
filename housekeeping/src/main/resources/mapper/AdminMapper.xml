@@ -20,17 +20,18 @@
     </delete>
 
 <!--更改账号信息-->
-    <update id="update" parameterType="com.zjz.housekeeping.module.entity.Admin">
+    <update id="update" parameterType="Admin">
         update tb_admin
         <set>
-            <if test="adminName != null">
-            adminName=#{adminName}
+            <if test="adminName!=null">
+                adminName=#{adminName},
             </if>
-            <if test="adminPwd !=null">
-            adminPwd=#{adminPwd}
+            <if test="adminPwd!=null">
+                adminPwd=#{adminPwd},
             </if>
-            where adminId=#{adminId}
+
         </set>
+        where adminId=#{adminId}
     </update>
 
 <!--按主键查询 -->
@@ -41,7 +42,7 @@
     </resultMap>
 
 
-    <select id="queryId" parameterType="java.lang.Integer" resultMap="Query">
+    <select id="queryById" parameterType="java.lang.Integer" resultMap="Query">
         select *from tb_admin where adminId=#{id}
     </select>
 

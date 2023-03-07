@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjz.housekeeping.dao.OrderDao">
+    <resultMap id="orderMap" type="com.zjz.housekeeping.module.entity.Order">
+        <id property="orderId" column="orderId"/>
+        <result property="userId" column="userId"/>
+        <result property="keeperId" column="keeperId"/>
+        <result property="serviceId" column="serviceId"/>
+        <result property="timeSlot" column="timeSlot"/>
+        <result property="createTime" column="createTime"/>
+        <result property="money" column="money"/>
+        <result property="payTime" column="payTime"/>
+        <result property="evaluateId" column="evaluateId"/>
+        <result property="evaluateTime" column="evaluateTime"/>
+        <result property="status" column="status"/>
+        <association property="user" column="userId"
+                     resultMap="com.zjz.housekeeping.dao.UserDao.userMap"/>
+        <association property="keeper" column="keeperId"
+                     resultMap="com.zjz.housekeeping.dao.KeeperDao.keeperMap"/>
+    </resultMap>
+
+    <!--    <resultMap id="orderDtoMap" extends="orderMap" type="com.zjz.housekeeping.module.dto.OrderDto">-->
+    <!--        <result column="search" property="search"/>-->
+    <!--        <result column="browse" property="browse"/>-->
+    <!--        <result column="consume" property="consume"/>-->
+    <!--    </resultMap>-->
+
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="Order">
+        insert into tb_order
+        values (#{orderId}, #{userId},#{keeperId},#{serviceId},#{timeSlot}, #{createTime},#{money},
+                #{payTime}, #{evaluateId}, #{evaluateTime}, #{status})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="int">
+        delete
+        from tb_order
+        where orderId = #{orderId}
+    </delete>
+
+    <!-- 动态修改 -->
+    <update id="update" parameterType="Order">
+        update tb_order u
+        <set>
+            <if test="userId !=null">
+                u.userId = #{userId},
+            </if>
+            <if test="keeperId !=null">
+                u.keeperId = #{keeperId},
+            </if>
+            <if test="serviceId !=null">
+                u.serviceId = #{serviceId},
+            </if>
+            <if test="timeSlot !=null">
+                u.timeSlot = #{timeSlot},
+            </if>
+            <if test="createTime !=null">
+                u.createTime = #{createTime},
+            </if>
+            <if test="money !=null">
+                u.money = #{money},
+            </if>
+            <if test="payTime !=null">
+                u.payTime = #{payTime},
+            </if>
+            <if test="evaluateId !=null">
+                u.evaluateId = #{evaluateId},
+            </if>
+            <if test="evaluateTime !=null">
+                u.evaluateTime = #{evaluateTime},
+            </if>
+            <if test="status !=null">
+                u.status = #{status},
+            </if>
+        </set>
+        where u.orderId = #{orderId}
+    </update>
+
+    <!-- Id查询 -->
+    <select id="queryById" parameterType="Order" resultMap="orderMap">
+        select *
+        from tb_order u
+        where u.orderId = #{orderId}
+    </select>
+
+
+    <sql id="selectActive">
+        <where>
+            <if test="orderId != null">
+                o.orderId = #{orderId}
+            </if>
+            <if test="userId != null">
+                and o.userId like
+                concat('%',#{userId},'%')
+            </if>
+            <if test="keeperId != null">
+                and o.keeperId = #{keeperId}
+            </if>
+            <if test="serviceId != null">
+                and o.serviceId = #{serviceId}
+            </if>
+            <if test="timeSlot != null">
+                and o.timeSlot = #{timeSlot}
+            </if>
+            <if test="payTime != null">
+                and o.payTime like
+                concat('%',#{payTime},'%')
+            </if>
+            <if test="evaluateId != null">
+                and o.evaluateId like
+                concat('%',#{evaluateId},'%')
+            </if>
+            <if test="status !=null">
+                u.status = #{status},
+            </if>
+        </where>
+    </sql>
+
+    <!-- 动态模糊查询 -->
+    <select id="queryCondition" parameterType="Order" resultMap="orderMap">
+        select * from tb_order u
+        <!-- 查询条件 -->
+        <include refid="selectActive"/>
+    </select>
+
+    <!-- 分页 -->
+    <select id="queryBySelectActive" resultMap="orderMap">
+        select o.*,u.*,k.*,s.* from tb_order o
+        LEFT JOIN tb_user u ON (o.userId = u.userId)
+        LEFT JOIN tb_keeper k ON (o.keeperId = k.keeperId)
+        LEFT JOIN tb_service s ON (o.serviceId = s.serviceId)
+        <include refid="selectActive"/>
+        ORDER BY o.createTime DESC
+        <!-- 分页-->
+        <if test="currentPage != null and pageSize != null">
+            <bind name="start" value="(currentPage - 1) * pageSize"/>
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+
+    <select id="countBySelectActive" resultType="int">
+        select count(1) from tb_order o
+
+        <include refid="selectActive"/>
+    </select>
+
+    <!-- 用户推荐 -->
+
+    <!--    <select id="getCollectCategory" resultType="int">-->
+    <!--        select g.categoryId-->
+    <!--        from tb_order u-->
+    <!--                 LEFT JOIN tb_collect c ON (u.orderId = c.orderId)-->
+    <!--                 LEFT JOIN tb_product p ON (c.productId = p.productId)-->
+    <!--                 LEFT OUTER JOIN tb_category g ON (p.categoryId = g.categoryId)-->
+    <!--        where c.orderId = #{orderId}-->
+    <!--          and c.productId = p.productId-->
+    <!--    </select>-->
+
+
+    <!--    <select id="getCartCategory" resultType="int">-->
+    <!--        select g.categoryId-->
+    <!--        from tb_order u-->
+    <!--                 LEFT JOIN tb_cart c ON (u.orderId = c.orderId)-->
+    <!--                 LEFT JOIN tb_product p ON (c.productId = p.productId)-->
+    <!--                 LEFT OUTER JOIN tb_category g ON (p.categoryId = g.categoryId)-->
+    <!--        where c.orderId = #{orderId}-->
+    <!--          and c.productId = p.productId-->
+    <!--    </select>-->
+
+
+    <!--    <select id="getOrderRecommend" parameterType="int" resultMap="orderDtoMap">-->
+    <!--        select u.*-->
+    <!--        from tb_order u-->
+    <!--                 LEFT JOIN tb_collect c ON (u.orderId = c.orderId)-->
+    <!--                 LEFT JOIN tb_product p ON (c.productId = p.productId)-->
+    <!--                 LEFT JOIN tb_img i ON (p.imgId = i.imgId)-->
+    <!--        where u.orderId = #{orderId}-->
+    <!--    </select>-->
+
+</mapper>

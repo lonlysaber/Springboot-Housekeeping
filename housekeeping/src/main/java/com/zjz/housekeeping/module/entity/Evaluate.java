@@ -22,4 +22,6 @@ public class Evaluate {
     private String evaluateStar;
     private String evaluateDetail;
     private Date evaluateTime;
+    private User user;
+    private Keeper keeper;
 }

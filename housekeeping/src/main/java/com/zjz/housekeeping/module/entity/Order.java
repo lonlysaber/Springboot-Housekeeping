@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 张进哲
@@ -15,14 +16,25 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Order {
+
     private Integer orderId;
     private Integer userId;
     private Integer keeperId;
+    private Integer serviceId;
+    public String timeSlot;
+    public TimeSlot timeSlotObj;
     private Date createTime;
     private Integer money;
     private Date payTime;
     private Integer evaluateId;
     private Date evaluateTime;
-    private String endType;
+    private Integer status;
+    private String statusDes;
+    private String evaluateDes;
+    private User user;
+    private Keeper keeper;
+    private Service service;
+    private Evaluate evaluate;
+
 
 }

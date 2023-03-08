@@ -4,10 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum OrderTypeEnum {
-    oty1(0,"待支付"),
-    oty2(1,"已支付"),
-    oty3(2,"已支付"),
-    oty4(3,"已支付");
+    oty1(0,"待服务"),
+    oty2(1,"服务中"),
+    oty3(2,"待支付"),
+    oty4(3,"待评价"),
+    oty5(4,"已取消"),
+    oty6(5,"已退款"),
+    ety4(6,"已评价");
 
     private Integer oStatus;
     private String describe;

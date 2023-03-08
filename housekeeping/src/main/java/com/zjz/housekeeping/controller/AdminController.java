@@ -51,7 +51,7 @@ public class AdminController {
     /*
    修改管理员信息
     */
-    @GetMapping("/update")
+    @PostMapping("/update")
     @ApiOperation("修改管理员信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "admin", value = "管理员", dataType = "Admin"),
@@ -60,6 +60,7 @@ public class AdminController {
 
         return adminService.update(admin);
     }
+
     /*
   按id查询
    */

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjz.housekeeping.dao.ServiceDao">
+    <resultMap id="serviceMap" type="com.zjz.housekeeping.module.entity.Service">
+        <id property="serviceId" column="serviceId"/>
+        <result property="serviceBigType" column="serviceBigType"/>
+        <result property="serviceSmallType" column="serviceSmallType"/>
+
+    </resultMap>
+
+    <!--    <resultMap id="serviceDtoMap" extends="serviceMap" type="com.zjz.housekeeping.module.dto.ServiceDto">-->
+    <!--        <result column="search" property="search"/>-->
+    <!--        <result column="browse" property="browse"/>-->
+    <!--        <result column="consume" property="consume"/>-->
+    <!--    </resultMap>-->
+
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="Service">
+        insert into tb_service
+        values (#{serviceId}, #{serviceBigType},#{serviceSmallType})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="int">
+        delete
+        from tb_service
+        where serviceId = #{serviceId}
+    </delete>
+
+    <!-- 动态修改 -->
+    <update id="update" parameterType="Service">
+        update tb_service s
+        <set>
+            <if test="serviceBigType !=null">
+                s.serviceBigType = #{serviceBigType},
+            </if>
+            <if test="serviceSmallType !=null">
+                s.serviceSmallType = #{serviceSmallType},
+            </if>
+
+        </set>
+        where s.serviceId = #{serviceId}
+    </update>
+
+    <!-- Id查询 -->
+    <select id="queryById" parameterType="Service" resultMap="serviceMap">
+        select *
+        from tb_service s
+        where s.serviceId = #{serviceId}
+    </select>
+
+
+    <sql id="selectActive">
+        <where>
+            <if test="serviceId != null">
+                s.serviceId = #{serviceId}
+            </if>
+            <if test="serviceBigType != null">
+                and s.serviceBigType like
+                concat('%',#{serviceBigType},'%')
+            </if>
+            <if test="serviceSmallType != null">
+                and s.serviceSmallType = #{serviceSmallType}
+            </if>
+
+        </where>
+    </sql>
+
+<!--    查询所有服务-->
+    <select id="getAllService" parameterType="Service" resultMap="serviceMap">
+        select * from tb_service;
+    </select>
+    <!-- 动态模糊查询 -->
+<!--    <select id="queryCondition" parameterType="Service" resultMap="serviceMap">-->
+<!--        select * from tb_service s-->
+<!--        &lt;!&ndash; 查询条件 &ndash;&gt;-->
+<!--        <include refid="selectActive"/>-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 分页 &ndash;&gt;-->
+<!--    <select id="queryBySelectActive" resultMap="serviceMap">-->
+<!--        select * from tb_service s-->
+<!--        <include refid="selectActive"/>-->
+<!--        &lt;!&ndash; 分页&ndash;&gt;-->
+<!--        <if test="currentPage != null and pageSize != null">-->
+<!--            <bind name="start" value="(currentPage - 1) * pageSize"/>-->
+<!--            limit #{start},#{pageSize}-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    <select id="countBySelectActive" resultType="int">-->
+<!--        select count(1) from tb_service s-->
+<!--        <include refid="selectActive"/>-->
+<!--    </select>-->
+
+   
+
+</mapper>

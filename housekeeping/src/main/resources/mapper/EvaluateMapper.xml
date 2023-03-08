@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjz.housekeeping.dao.EvaluateDao">
+    <resultMap id="evaluateMap" type="com.zjz.housekeeping.module.entity.Evaluate">
+        <id property="evaluateId" column="evaluateId"/>
+        <result property="userId" column="userId"/>
+        <result property="keeperId" column="keeperId"/>
+        <result property="orderId" column="orderId"/>
+        <result property="evaluateStar" column="evaluateStar"/>
+        <result property="evaluateDetail" column="evaluateDetail"/>
+        <result property="evaluateTime" column="evaluateTime"/>
+        <association property="user" column="userId"
+                     resultMap="com.zjz.housekeeping.dao.UserDao.userMap"/>
+        <association property="keeper" column="keeperId"
+                     resultMap="com.zjz.housekeeping.dao.KeeperDao.keeperMap"/>
+
+    </resultMap>
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="Evaluate">
+        insert into tb_evaluate
+        values (#{evaluateId}, #{userId},#{keeperId},#{orderId},#{evaluateStar}, #{evaluateDetail},#{evaluateTime})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="int">
+        delete
+        from tb_evaluate
+        where evaluateId = #{evaluateId}
+    </delete>
+
+    <!-- 动态修改 -->
+    <update id="update" parameterType="Evaluate">
+        update tb_evaluate e
+        <set>
+            <if test="userId !=null">
+                e.userId = #{userId},
+            </if>
+            <if test="keeperId !=null">
+                e.keeperId = #{keeperId},
+            </if>
+            <if test="orderId !=null">
+                e.orderId = #{orderId},
+            </if>
+            <if test="evaluateStar !=null">
+                e.evaluateStar = #{evaluateStar},
+            </if>
+            <if test="evaluateDetail !=null">
+                e.evaluateDetail = #{evaluateDetail},
+            </if>
+            <if test="evaluateTime !=null">
+                e.evaluateTime = #{evaluateTime},
+            </if>
+        </set>
+        where e.evaluateId = #{evaluateId}
+    </update>
+
+    <!-- Id查询 -->
+    <select id="queryById" parameterType="int" resultMap="evaluateMap">
+        select e.*,u.*,k.* from tb_evaluate e
+        LEFT JOIN tb_user u ON (e.userId = u.userId)
+        LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
+        where e.orderId = #{orderId}
+    </select>
+
+
+    <sql id="selectActive">
+        <where>
+            <if test="evaluateId != null">
+                e.evaluateId = #{evaluateId}
+            </if>
+            <if test="userId != null">
+                and e.userId like
+                concat('%',#{userId},'%')
+            </if>
+            <if test="keeperId != null">
+                and e.keeperId = #{keeperId}
+            </if>
+            <if test="orderId != null">
+                and e.orderId = #{orderId}
+            </if>
+            <if test="evaluateStar != null">
+                and e.evaluateStar = #{evaluateStar}
+            </if>
+            <if test="evaluateTime != null">
+                and e.evaluateTime like
+                concat('%',#{evaluateTime},'%')
+            </if>
+        </where>
+    </sql>
+
+    <!-- 动态模糊查询 -->
+    <select id="queryCondition" parameterType="Evaluate" resultMap="evaluateMap">
+        select e.*,u.*,k.* from tb_evaluate e
+        LEFT JOIN tb_user u ON (e.userId = u.userId)
+        LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
+        <include refid="selectActive"/>
+        EVALUATE BY e.evaluateTime DESC
+    </select>
+
+</mapper>

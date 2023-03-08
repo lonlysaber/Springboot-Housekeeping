@@ -52,7 +52,7 @@
     <update id="update" parameterType="Order">
         update tb_order o
         <set>
-            <if test="userId !=null">
+            <if test="userId !=null ">
                 o.userId = #{userId},
             </if>
             <if test="keeperId !=null">
@@ -100,11 +100,18 @@
                 o.orderId = #{orderId}
             </if>
             <if test="userId != null">
-                and o.userId like
-                concat('%',#{userId},'%')
+                and o.userId = #{userId}
+            </if>
+            <if test="userName != null">
+                and u.userName like
+                concat('%',#{userName},'%')
             </if>
             <if test="keeperId != null">
                 and o.keeperId = #{keeperId}
+            </if>
+            <if test="keeperName != null">
+                and k.keeperName like
+                concat('%',#{keeperName},'%')
             </if>
             <if test="serviceId != null">
                 and o.serviceId = #{serviceId}
@@ -128,9 +135,13 @@
 
     <!-- 动态模糊查询 -->
     <select id="queryCondition" parameterType="Order" resultMap="orderMap">
-        select * from tb_order o
-        <!-- 查询条件 -->
+        select o.*,u.*,k.*,s.*,e.* from tb_order o
+        LEFT JOIN tb_user u ON (o.userId = u.userId)
+        LEFT JOIN tb_keeper k ON (o.keeperId = k.keeperId)
+        LEFT JOIN tb_service s ON (o.serviceId = s.serviceId)
+        LEFT JOIN tb_evaluate e ON (o.evaluateId = e.evaluateId)
         <include refid="selectActive"/>
+        ORDER BY o.createTime DESC
     </select>
 
     <!-- 分页 -->

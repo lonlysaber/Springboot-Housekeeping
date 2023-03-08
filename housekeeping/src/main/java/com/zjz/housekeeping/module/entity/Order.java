@@ -33,6 +33,8 @@ public class Order {
     private String evaluateDes;
     private User user;
     private Keeper keeper;
+    private String userName;
+    private String keeperName;
     private Service service;
     private Evaluate evaluate;
 

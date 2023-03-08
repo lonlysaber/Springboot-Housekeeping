@@ -11,4 +11,8 @@ public interface ServiceService {
     ResultVO update(Service service);
 
     ResultVO queryById(Integer serviceId);
+
+    ResultVO getAllService(Service service);
+
+    ResultVO queryCondition(Service service);
 }

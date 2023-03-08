@@ -68,6 +68,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResultVO queryCondition(Order order) {
         List<Order> orders = orderDao.queryCondition(order);
+        for (Order order1 : orders) {
+            //       json转化为java对象
+            String jsonData = order1.timeSlot; //json格式的字符串
+            TimeSlot timeSlot = JSONObject.parseObject(jsonData, TimeSlot.class);
+            order1.timeSlotObj = timeSlot;
+//            OrderTypeEnum orderTypeEnum = new OrderTypeEnum(0);
+//            枚举类替换 订单状态
+            order1.setStatusDes(OrderTypeEnum.toDescribe(order1.getStatus()));
+//            枚举类替换 评价状态
+            order1.setEvaluateDes(EvaluateTypeEnum.toDescribe(order1.getStatus()));
+        }
         if(orders.isEmpty())
             return new ResultVO(ResultEnum.FAIL,orders);
         else
@@ -89,32 +100,34 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+
+
+
     /**
      * 分页查询
      *
      * @param orderVO
      * @return
      */
-
     @Override
     public ResultVO getAllOrder(OrderVO orderVO) {
         PageBeans pageBeans = new PageBeans();
         pageBeans.setCurrentPage(orderVO.getCurrentPage());
         pageBeans.setPageSize(orderVO.getPageSize());
         pageBeans.setCount(orderDao.countBySelectActive(orderVO));
+
         List<Order> orders = orderDao.queryBySelectActive(orderVO);
 
-        for(int i = 0;i < orders.size();i++){
+        for (Order order : orders) {
             //       json转化为java对象
-            String jsonData = orders.get(i).timeSlot; //json格式的字符串
+            String jsonData = order.timeSlot; //json格式的字符串
             TimeSlot timeSlot = JSONObject.parseObject(jsonData, TimeSlot.class);
-            orders.get(i).timeSlotObj = timeSlot;
+            order.timeSlotObj = timeSlot;
 //            OrderTypeEnum orderTypeEnum = new OrderTypeEnum(0);
 //            枚举类替换 订单状态
-            orders.get(i).setStatusDes(OrderTypeEnum.toDescribe(orders.get(i).getStatus()));
+            order.setStatusDes(OrderTypeEnum.toDescribe(order.getStatus()));
 //            枚举类替换 评价状态
-            orders.get(i).setEvaluateDes(EvaluateTypeEnum.toDescribe(orders.get(i).getStatus()));
-
+            order.setEvaluateDes(EvaluateTypeEnum.toDescribe(order.getStatus()));
         }
         pageBeans.setData(orders);
 

@@ -29,7 +29,6 @@
             <if test="adminPwd!=null">
                 adminPwd=#{adminPwd},
             </if>
-
         </set>
         where adminId=#{adminId}
     </update>

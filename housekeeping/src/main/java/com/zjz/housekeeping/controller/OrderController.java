@@ -1,5 +1,6 @@
 package com.zjz.housekeeping.controller;
 
+import com.zjz.housekeeping.enums.ResultEnum;
 import com.zjz.housekeeping.module.entity.Order;
 import com.zjz.housekeeping.module.vo.ResultVO;
 import com.zjz.housekeeping.module.vo.OrderVO;
@@ -22,7 +23,21 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     @Autowired
     OrderService orderService;
+    /**
+     * 添加管理员
+     * @param order
+     * @return
+     */
+    @GetMapping("/add")
+    @ApiOperation("添加订单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "order", value = "订单", dataType = "Order"),
+    })
+    public ResultVO add(@RequestBody Order order) {
+        orderService.add(order);
 
+        return new ResultVO(ResultEnum.ADD_SUCCESS,order);
+    }
 
 
     @PostMapping("/updateOrder")

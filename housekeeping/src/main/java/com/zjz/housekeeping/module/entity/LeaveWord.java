@@ -9,19 +9,21 @@ import java.util.Date;
 /**
  * @author 张进哲
  * @version 1.0
- * @date 2023/2/28 16:04
+ * @date 2023/5/18 22:29
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Appointment {
-    private Integer appointmentId;
+public class LeaveWord {
+    private Integer leaveWordId;
     private Integer orderId;
     private Integer userId;
     private Integer keeperId;
-    private Date appointmentTime;
-    private String timeSlot;
-    private String status;
+    private String leaveWordType;
+    private String leaveWordDetail;
+    private String leaveWordStatus;
+    private Date leaveWordTime;
+    private Date updateTime;
     private User user;
     private Keeper keeper;
 }

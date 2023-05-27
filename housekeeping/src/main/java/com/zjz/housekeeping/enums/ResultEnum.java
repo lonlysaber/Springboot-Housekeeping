@@ -5,13 +5,13 @@ import lombok.Getter;
 @Getter
 public enum ResultEnum {
     SUCCESS(200,"成功"),
-    FAIL(201, "失败"),
+    FAIL(400, "失败"),
     ADD_SUCCESS(200, "添加成功"),
-    ADD_FAIL(203, "添加失败"),
+    ADD_FAIL(400, "添加失败"),
     UPDATE_SUCCESS(200, "修改成功"),
-    UPDATE_FAIL(205, "修改失败"),
+    UPDATE_FAIL(400, "修改失败"),
     DELETE_SUCCESS(200, "删除成功"),
-    DELETE_FAIL(207, "删除失败"),
+    DELETE_FAIL(400, "删除失败"),
     SERVICE_ERROR(500, "服务异常");
 
     private Integer code;

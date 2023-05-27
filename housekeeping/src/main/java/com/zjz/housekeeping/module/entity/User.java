@@ -24,4 +24,5 @@ public class User {
     private String userPwd;
     private String status;
     private Date regTime;
+    private Order order;
 }

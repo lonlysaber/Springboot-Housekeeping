@@ -1,7 +1,12 @@
 package com.zjz.housekeeping.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zjz.housekeeping.dao.UserDao;
+import com.zjz.housekeeping.enums.EvaluateTypeEnum;
+import com.zjz.housekeeping.enums.OrderTypeEnum;
 import com.zjz.housekeeping.enums.ResultEnum;
+import com.zjz.housekeeping.module.entity.Order;
+import com.zjz.housekeeping.module.entity.TimeSlot;
 import com.zjz.housekeeping.module.entity.User;
 import com.zjz.housekeeping.module.vo.PageBeans;
 import com.zjz.housekeeping.module.vo.ResultVO;
@@ -76,7 +81,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultVO login(User user) {
         User u = new User();
+//        if(user.getUserPhone().equals(u.getUserPhone()) || user.getUserName().equals(u.getUserName())){
+//            return new ResultVO(ResultEnum.FAIL, "必要参数缺失");
+//        }
         u.setUserName(user.getUserName());
+        u.setUserPhone(user.getUserPhone());
 
         List<User> list = userDao.queryCondition(u);
         if (list == null || list.isEmpty()) {
@@ -118,7 +127,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultVO getOrder(Integer userId) {
-        return null;
+        List<Order> orders = userDao.getOrder(userId);
+        for (Order order1 : orders) {
+            //       json转化为java对象
+            String jsonData = order1.timeSlot; //json格式的字符串
+            TimeSlot timeSlot = JSONObject.parseObject(jsonData, TimeSlot.class);
+            order1.timeSlotObj = timeSlot;
+//            OrderTypeEnum orderTypeEnum = new OrderTypeEnum(0);
+//            枚举类替换 订单状态
+            order1.setStatusDes(OrderTypeEnum.toDescribe(order1.getStatus()));
+//            枚举类替换 评价状态
+            order1.setEvaluateDes(EvaluateTypeEnum.toDescribe(order1.getStatus()));
+        }
+        if(orders.isEmpty())
+            return new ResultVO(ResultEnum.FAIL,orders);
+        else
+            return new ResultVO(ResultEnum.SUCCESS,orders);
     }
 
     @Override

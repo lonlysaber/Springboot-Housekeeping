@@ -28,12 +28,12 @@ public class EvaluateServiceImpl implements EvaluateService {
     public ResultVO add(Evaluate evaluate) {
         evaluateDao.add(evaluate);
         Order order = new Order();
-        Evaluate result = evaluateDao.queryById(evaluate.getOrderId());
+        List<Evaluate> result = evaluateDao.queryCondition(evaluate);
         order.setOrderId(evaluate.getOrderId());
-        order.setEvaluateId(result.getEvaluateId());
+        order.setEvaluateId(result.get(0).getEvaluateId());
         order.setEvaluateTime(evaluate.getEvaluateTime());
         orderDao.update(order);
-        return new ResultVO(ResultEnum.SUCCESS,result);
+        return new ResultVO(ResultEnum.SUCCESS,result.get(0));
     }
 
     @Override

@@ -45,13 +45,13 @@ public class EvaluateController {
         return evaluateService.update(evaluate);
     }
 
-    @GetMapping("/queryById/{orderId}")
+    @GetMapping("/queryById/{evaluateId}")
     @ApiOperation("Id查询评价")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "evaluateId", value = "评价Id", dataType = "Integer"),
     })
-    public ResultVO queryById(@PathVariable Integer orderId) {
-        return evaluateService.queryById(orderId);
+    public ResultVO queryById(@PathVariable Integer evaluateId) {
+        return evaluateService.queryById(evaluateId);
     }
 
 

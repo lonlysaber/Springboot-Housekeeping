@@ -28,7 +28,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @GetMapping("/add")
+    @PostMapping("/add")
     @ApiOperation("添加订单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "order", value = "订单", dataType = "Order"),

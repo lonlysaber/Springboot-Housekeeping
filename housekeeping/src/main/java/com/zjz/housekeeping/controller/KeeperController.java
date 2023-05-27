@@ -90,4 +90,13 @@ public class KeeperController {
     public ResultVO deleteKeeper(@PathVariable Integer keeperId){
         return keeperService.delete(keeperId);
     }
+
+    @GetMapping("/getOrder/{keeperId}")
+    @ApiOperation("Id查询服务人员订单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keeperId", value = "服务人员Id", dataType = "Integer"),
+    })
+    public ResultVO queryOrder(@PathVariable Integer keeperId) {
+        return keeperService.getOrder(keeperId);
+    }
 }

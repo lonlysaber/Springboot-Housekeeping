@@ -17,7 +17,6 @@
                      resultMap="com.zjz.housekeeping.dao.UserDao.userMap"/>
         <association property="keeper" column="keeperId"
                      resultMap="com.zjz.housekeeping.dao.KeeperDao.keeperMap"/>
-
     </resultMap>
 
     <!-- 添加 -->
@@ -64,7 +63,7 @@
         select e.*,u.*,k.* from tb_evaluate e
         LEFT JOIN tb_user u ON (e.userId = u.userId)
         LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
-        where e.orderId = #{orderId}
+        where e.evaluateId = #{evaluateId}
     </select>
 
 
@@ -74,8 +73,7 @@
                 e.evaluateId = #{evaluateId}
             </if>
             <if test="userId != null">
-                and e.userId like
-                concat('%',#{userId},'%')
+                and e.userId = #{userId}
             </if>
             <if test="keeperId != null">
                 and e.keeperId = #{keeperId}
@@ -87,8 +85,7 @@
                 and e.evaluateStar = #{evaluateStar}
             </if>
             <if test="evaluateTime != null">
-                and e.evaluateTime like
-                concat('%',#{evaluateTime},'%')
+                and e.evaluateTime = #{evaluateTime}
             </if>
         </where>
     </sql>
@@ -99,7 +96,7 @@
         LEFT JOIN tb_user u ON (e.userId = u.userId)
         LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
         <include refid="selectActive"/>
-        EVALUATE BY e.evaluateTime DESC
+        ORDER BY e.evaluateTime DESC
     </select>
 
 </mapper>

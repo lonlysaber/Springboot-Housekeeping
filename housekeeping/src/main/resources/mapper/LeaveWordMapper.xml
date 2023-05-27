@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zjz.housekeeping.dao.LeaveWordDao">
+    <resultMap id="leaveWordMap" type="com.zjz.housekeeping.module.entity.LeaveWord">
+        <id property="leaveWordId" column="leaveWordId"/>
+        <result property="userId" column="userId"/>
+        <result property="keeperId" column="keeperId"/>
+        <result property="orderId" column="orderId"/>
+        <result property="leaveWordType" column="leaveWordType"/>
+        <result property="leaveWordDetail" column="leaveWordDetail"/>
+        <result property="leaveWordStatus" column="leaveWordStatus"/>
+        <result property="leaveWordTime" column="leaveWordTime"/>
+        <result property="updateTime" column="updateTime"/>
+        <association property="user" column="userId"
+                     resultMap="com.zjz.housekeeping.dao.UserDao.userMap"/>
+        <association property="keeper" column="keeperId"
+                     resultMap="com.zjz.housekeeping.dao.KeeperDao.keeperMap"/>
+
+    </resultMap>
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="LeaveWord">
+        insert into tb_leaveWord
+        values (#{leaveWordId}, #{userId},#{keeperId},#{orderId},#{leaveWordType},
+                #{leaveWordDetail},#{leaveWordStatus},#{leaveWordTime},#{updateTime})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="int">
+        delete
+        from tb_leaveWord
+        where leaveWordId = #{leaveWordId}
+    </delete>
+
+    <!-- 动态修改 -->
+    <update id="update" parameterType="LeaveWord">
+        update tb_leaveWord e
+        <set>
+            <if test="userId !=null">
+                e.userId = #{userId},
+            </if>
+            <if test="keeperId !=null">
+                e.keeperId = #{keeperId},
+            </if>
+            <if test="orderId !=null">
+                e.orderId = #{orderId},
+            </if>
+            <if test="leaveWordType !=null">
+                e.leaveWordType = #{leaveWordType},
+            </if>
+            <if test="leaveWordDetail !=null">
+                e.leaveWordDetail = #{leaveWordDetail},
+            </if>
+            <if test="leaveWordStatus !=null">
+                e.leaveWordStatus = #{leaveWordStatus},
+            </if>
+            <if test="leaveWordTime !=null">
+                e.leaveWordTime = #{leaveWordTime},
+            </if>
+            <if test="updateTime !=null">
+                e.updateTime = #{updateTime},
+            </if>
+        </set>
+        where e.leaveWordId = #{leaveWordId}
+    </update>
+
+    <!-- Id查询 -->
+    <select id="queryById" parameterType="int" resultMap="leaveWordMap">
+        select e.*,u.*,k.* from tb_leaveWord e
+                                    LEFT JOIN tb_user u ON (e.userId = u.userId)
+                                    LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
+        where e.leaveWordId = #{leaveWordId}
+    </select>
+
+
+    <sql id="selectActive">
+        <where>
+            <if test="leaveWordId != null">
+                e.leaveWordId = #{leaveWordId}
+            </if>
+            <if test="userId != null">
+                and e.userId like
+                concat('%',#{userId},'%')
+            </if>
+            <if test="keeperId != null">
+                and e.keeperId = #{keeperId}
+            </if>
+            <if test="orderId != null">
+                and e.orderId = #{orderId}
+            </if>
+            <if test="leaveWordType != null">
+                and e.leaveWordType = #{leaveWordType}
+            </if>
+            <if test="leaveWordDetail != null">
+                and e.leaveWordDetail = #{leaveWordDetail}
+            </if>
+<!--            <if test="leaveWordTime != null">-->
+<!--                and e.leaveWordTim e= #{leaveWordTime}-->
+<!--            </if>-->
+        </where>
+    </sql>
+
+    <!-- 动态模糊查询 -->
+    <select id="queryCondition" parameterType="LeaveWord" resultMap="leaveWordMap">
+        select e.*,u.*,k.* from tb_leaveWord e
+        LEFT JOIN tb_user u ON (e.userId = u.userId)
+        LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
+        <include refid="selectActive"/>
+        ORDER BY e.leaveWordTime DESC
+    </select>
+
+    <!-- 分页 -->
+    <select id="queryBySelectActive" resultMap="leaveWordMap">
+        select e.*,u.*,k.* from tb_leaveWord e
+        LEFT JOIN tb_user u ON (e.userId = u.userId)
+        LEFT JOIN tb_keeper k ON (e.keeperId = k.keeperId)
+        <include refid="selectActive"/>
+        ORDER BY e.updateTime DESC
+        <!-- 分页-->
+        <if test="currentPage != null and pageSize != null">
+            <bind name="start" value="(currentPage - 1) * pageSize"/>
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+
+    <select id="countBySelectActive" resultType="int">
+        select count(1) from tb_leaveWord e
+
+        <include refid="selectActive"/>
+    </select>
+
+</mapper>

@@ -1,6 +1,9 @@
 package com.zjz.housekeeping.dao;
 
+import com.zjz.housekeeping.module.entity.Keeper;
 import com.zjz.housekeeping.module.entity.Order;
+import com.zjz.housekeeping.module.entity.Service;
+import com.zjz.housekeeping.module.entity.User;
 import com.zjz.housekeeping.module.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,5 +24,9 @@ public interface OrderDao {
     List<Order> queryBySelectActive(OrderVO orderVO);
 
     Integer countBySelectActive(OrderVO orderVO);
+
+    List<Service> hotRecommend(User user);
+
+    List<Keeper> userRecommend(User user);
 
 }

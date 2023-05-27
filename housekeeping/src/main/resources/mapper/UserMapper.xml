@@ -16,7 +16,27 @@
         <result property="status" column="status"/>
         <result property="regTime" column="regTime"/>
     </resultMap>
-
+    <resultMap id="orderMap" type="com.zjz.housekeeping.module.entity.Order">
+        <id property="orderId" column="orderId"/>
+        <result property="userId" column="userId"/>
+        <result property="keeperId" column="keeperId"/>
+        <result property="serviceId" column="serviceId"/>
+        <result property="timeSlot" column="timeSlot"/>
+        <result property="createTime" column="createTime"/>
+        <result property="money" column="money"/>
+        <result property="payTime" column="payTime"/>
+        <result property="evaluateId" column="evaluateId"/>
+        <result property="evaluateTime" column="evaluateTime"/>
+        <result property="status" column="status"/>
+        <association property="user" column="userId"
+                     resultMap="com.zjz.housekeeping.dao.UserDao.userMap"/>
+        <association property="keeper" column="keeperId"
+                     resultMap="com.zjz.housekeeping.dao.KeeperDao.keeperMap"/>
+        <association property="service" column="serviceId"
+                     resultMap="com.zjz.housekeeping.dao.ServiceDao.serviceMap"/>
+        <association property="evaluate" column="evaluateId"
+                     resultMap="com.zjz.housekeeping.dao.EvaluateDao.evaluateMap"/>
+    </resultMap>
 <!--    <resultMap id="userDtoMap" extends="userMap" type="com.example.skydog.module.dto.UserDto">-->
 <!--        <result column="search" property="search"/>-->
 <!--        <result column="browse" property="browse"/>-->
@@ -127,6 +147,16 @@
         <include refid="selectActive"/>
     </select>
 
+    <select id="getOrder" parameterType="int" resultMap="orderMap">
+        select o.*,u.*,k.*,s.*,e.*
+        from tb_order o
+            LEFT JOIN tb_user u ON (u.userId = o.userId)
+            LEFT JOIN tb_keeper k ON (k.keeperId = o.keeperId)
+            LEFT JOIN tb_service s ON (o.serviceId = s.serviceId)
+            LEFT JOIN tb_evaluate e ON (o.evaluateId = e.evaluateId)
+        where o.userId = #{userId}
+    </select>
+
     <!-- 用户推荐 -->
 
 <!--    <select id="getCollectCategory" resultType="int">-->
@@ -159,5 +189,6 @@
 <!--                 LEFT JOIN tb_img i ON (p.imgId = i.imgId)-->
 <!--        where u.userId = #{userId}-->
 <!--    </select>-->
+
 
 </mapper>

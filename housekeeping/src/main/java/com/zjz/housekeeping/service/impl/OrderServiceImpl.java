@@ -85,20 +85,20 @@ public class OrderServiceImpl implements OrderService {
             return new ResultVO(ResultEnum.SUCCESS,orders);
     }
 
-    @Override
-    public ResultVO getOrder(Integer orderId) {
-        return null;
-    }
-
-    @Override
-    public ResultVO getCollect(Integer orderId) {
-        return null;
-    }
-
-    @Override
-    public ResultVO getEvaluate(Integer uerId) {
-        return null;
-    }
+//    @Override
+//    public ResultVO getOrder(Integer orderId) {
+//        return null;
+//    }
+//
+//    @Override
+//    public ResultVO getCollect(Integer orderId) {
+//        return null;
+//    }
+//
+//    @Override
+//    public ResultVO getEvaluate(Integer uerId) {
+//        return null;
+//    }
 
 
 

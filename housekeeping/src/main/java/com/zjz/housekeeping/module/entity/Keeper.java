@@ -30,4 +30,5 @@ public class Keeper {
     private String introduce;
     private Integer years;
     private Date regTime;
+    private Service service;
 }

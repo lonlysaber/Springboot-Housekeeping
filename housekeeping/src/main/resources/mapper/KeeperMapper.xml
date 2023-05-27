@@ -21,13 +21,30 @@
         <result property="introduce" column="introduce"/>
         <result property="years" column="years"/>
         <result property="regTime" column="regTime"/>
+        <association property="service" column="serviceId"
+                     resultMap="com.zjz.housekeeping.dao.ServiceDao.serviceMap"/>
     </resultMap>
-
-    <!--    <resultMap id="keeperDtoMap" extends="keeperMap" type="com.zjz.housekeeping.module.dto.KeeperDto">-->
-    <!--        <result column="search" property="search"/>-->
-    <!--        <result column="browse" property="browse"/>-->
-    <!--        <result column="consume" property="consume"/>-->
-    <!--    </resultMap>-->
+    <resultMap id="orderMap" type="com.zjz.housekeeping.module.entity.Order">
+        <id property="orderId" column="orderId"/>
+        <result property="userId" column="userId"/>
+        <result property="keeperId" column="keeperId"/>
+        <result property="serviceId" column="serviceId"/>
+        <result property="timeSlot" column="timeSlot"/>
+        <result property="createTime" column="createTime"/>
+        <result property="money" column="money"/>
+        <result property="payTime" column="payTime"/>
+        <result property="evaluateId" column="evaluateId"/>
+        <result property="evaluateTime" column="evaluateTime"/>
+        <result property="status" column="status"/>
+        <association property="user" column="userId"
+                     resultMap="com.zjz.housekeeping.dao.UserDao.userMap"/>
+        <association property="keeper" column="keeperId"
+                     resultMap="com.zjz.housekeeping.dao.KeeperDao.keeperMap"/>
+        <association property="service" column="serviceId"
+                     resultMap="com.zjz.housekeeping.dao.ServiceDao.serviceMap"/>
+        <association property="evaluate" column="evaluateId"
+                     resultMap="com.zjz.housekeeping.dao.EvaluateDao.evaluateMap"/>
+    </resultMap>
 
 
     <!-- 添加 -->
@@ -58,6 +75,9 @@
         <if test="keeperPhone != null">
             and k.keeperPhone =#{keeperPhone}
         </if>
+            <if test="keeperType != null">
+                and k.keeperType =#{keeperType}
+            </if>
         <if test="keeperGender != null">
             and k.keeperGender = #{keeperGender}
         </if>
@@ -142,14 +162,16 @@
 
     <!-- Id查询 -->
     <select id="queryById" parameterType="Keeper" resultMap="keeperMap">
-        select *
+        select k.*,s.*
         from tb_keeper k
+        LEFT JOIN tb_service s ON (k.keeperType = s.serviceId)
         where k.keeperId = #{keeperId}
     </select>
 
     <!-- 动态模糊查询 -->
     <select id="queryCondition" parameterType="Keeper" resultMap="keeperMap">
-        select * from tb_keeper k
+        select k.*,s.* from tb_keeper k
+        LEFT JOIN tb_service s ON (k.keeperType = s.serviceId)
         <!-- 查询条件 -->
         <include refid="selectActive"/>
     </select>
@@ -157,6 +179,7 @@
     <!-- 分页 -->
     <select id="queryBySelectActive" resultMap="keeperMap">
         select * from tb_keeper
+
         <include refid="selectActive"/>
         <!-- 分页-->
         <if test="currentPage != null and pageSize != null">
@@ -168,6 +191,16 @@
     <select id="countBySelectActive" resultType="int">
         select count(1) from tb_keeper
         <include refid="selectActive"/>
+    </select>
+
+    <select id="getOrder" parameterType="int" resultMap="orderMap">
+        select o.*,u.*,k.*,s.*,e.*
+        from tb_order o
+                 LEFT JOIN tb_user u ON (u.userId = o.userId)
+                 LEFT JOIN tb_keeper k ON (k.keeperId = o.keeperId)
+                 LEFT JOIN tb_service s ON (o.serviceId = s.serviceId)
+                 LEFT JOIN tb_evaluate e ON (o.evaluateId = e.evaluateId)
+        where o.userId = #{userId}
     </select>
 
     <!-- 用户推荐 -->

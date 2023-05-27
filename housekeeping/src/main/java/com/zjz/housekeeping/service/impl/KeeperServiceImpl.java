@@ -1,8 +1,13 @@
 package com.zjz.housekeeping.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zjz.housekeeping.dao.KeeperDao;
+import com.zjz.housekeeping.enums.EvaluateTypeEnum;
+import com.zjz.housekeeping.enums.OrderTypeEnum;
 import com.zjz.housekeeping.enums.ResultEnum;
 import com.zjz.housekeeping.module.entity.Keeper;
+import com.zjz.housekeeping.module.entity.Order;
+import com.zjz.housekeeping.module.entity.TimeSlot;
 import com.zjz.housekeeping.module.vo.KeeperVO;
 import com.zjz.housekeeping.module.vo.PageBeans;
 import com.zjz.housekeeping.module.vo.ResultVO;
@@ -77,6 +82,7 @@ public class KeeperServiceImpl implements KeeperService {
         Keeper k = new Keeper();
 
         k.setKeeperName(keeper.getKeeperName());
+        k.setKeeperPhone(keeper.getKeeperPhone());
 
         List<Keeper> list = keeperDao.queryCondition(k);
         if (list == null || list.isEmpty()) {
@@ -98,6 +104,27 @@ public class KeeperServiceImpl implements KeeperService {
     }
 
     @Override
+    public ResultVO getOrder(Integer keeperId) {
+        List<Order> orders = keeperDao.getOrder(keeperId);
+        for (Order order1 : orders) {
+            //       json转化为java对象
+            String jsonData = order1.timeSlot; //json格式的字符串
+            TimeSlot timeSlot = JSONObject.parseObject(jsonData, TimeSlot.class);
+            order1.timeSlotObj = timeSlot;
+//            OrderTypeEnum orderTypeEnum = new OrderTypeEnum(0);
+//            枚举类替换 订单状态
+            order1.setStatusDes(OrderTypeEnum.toDescribe(order1.getStatus()));
+//            枚举类替换 评价状态
+            order1.setEvaluateDes(EvaluateTypeEnum.toDescribe(order1.getStatus()));
+        }
+        if(orders.isEmpty())
+            return new ResultVO(ResultEnum.FAIL,orders);
+        else
+            return new ResultVO(ResultEnum.SUCCESS,orders);
+    }
+
+
+    @Override
     public ResultVO updatePassword(String oldPassword, String newPassword, Integer keeperId) {
         Keeper k = keeperDao.queryById(keeperId);
         if (k == null) {
@@ -116,10 +143,7 @@ public class KeeperServiceImpl implements KeeperService {
 
     }
 
-    @Override
-    public ResultVO getOrder(Integer keeperId) {
-        return null;
-    }
+
 
     @Override
     public ResultVO getCollect(Integer keeperId) {

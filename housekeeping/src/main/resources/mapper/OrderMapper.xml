@@ -26,13 +26,31 @@
         <association property="evaluate" column="evaluateId"
                      resultMap="com.zjz.housekeeping.dao.EvaluateDao.evaluateMap"/>
     </resultMap>
+    <resultMap id="keeperMap" type="com.zjz.housekeeping.module.entity.Keeper">
+        <id property="keeperId" column="keeperId"/>
+        <result property="keeperName" column="keeperName"/>
+        <result property="keeperPhone" column="keeperPhone"/>
+        <result property="keeperGender" column="keeperGender"/>
+        <result property="keeperAvatar" column="keeperAvatar"/>
+        <result property="keeperType" column="keeperType"/>
+        <result property="keeperPwd" column="keeperPwd"/>
+        <result property="star" column="star"/>
+        <result property="appointment" column="appointment"/>
+        <result property="age" column="age"/>
+        <result property="nativePlace" column="nativePlace"/>
+        <result property="feature" column="feature"/>
+        <result property="introduce" column="introduce"/>
+        <result property="years" column="years"/>
+        <result property="regTime" column="regTime"/>
+        <association property="service" column="serviceId"
+                     resultMap="com.zjz.housekeeping.dao.ServiceDao.serviceMap"/>
+    </resultMap>
+    <resultMap id="serviceMap" type="com.zjz.housekeeping.module.entity.Service">
+        <id property="serviceId" column="serviceId"/>
+        <result property="serviceBigType" column="serviceBigType"/>
+        <result property="serviceSmallType" column="serviceSmallType"/>
 
-    <!--    <resultMap id="orderDtoMap" extends="orderMap" type="com.zjz.housekeeping.module.dto.OrderDto">-->
-    <!--        <result column="search" property="search"/>-->
-    <!--        <result column="browse" property="browse"/>-->
-    <!--        <result column="consume" property="consume"/>-->
-    <!--    </resultMap>-->
-
+    </resultMap>
 
     <!-- 添加 -->
     <insert id="add" parameterType="Order">
@@ -165,6 +183,34 @@
 
         <include refid="selectActive"/>
     </select>
+
+    <!-- 热门推荐   -->
+    <select id="hotRecommend"  resultMap="serviceMap">
+        -- 联表查询
+        SELECT s.*
+        FROM tb_service AS s
+                 JOIN (
+            SELECT serviceId, COUNT(*) AS num
+            FROM tb_order
+            GROUP BY serviceId
+        ) AS o ON s.serviceId = o.serviceId
+        ORDER BY o.num DESC;
+    </select>
+    <!-- 用户推荐   -->
+    <select id="userRecommend" parameterType="user" resultMap="keeperMap">
+        -- 联表查询
+        SELECT k.*,s.*
+        FROM tb_keeper AS k
+            LEFT JOIN (
+                SELECT serviceId, COUNT(*) AS num
+                FROM tb_order
+                WHERE userId = #{userId}
+                GROUP BY serviceId
+            ) AS o ON k.keeperType = o.serviceId
+            LEFT JOIN tb_service AS s ON (k.keeperType = s.serviceId)
+        ORDER BY o.num DESC;
+    </select>
+
 
     <!-- 用户推荐 -->
 

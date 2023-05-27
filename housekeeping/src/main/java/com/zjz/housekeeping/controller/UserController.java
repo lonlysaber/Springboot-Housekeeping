@@ -94,5 +94,12 @@ public class UserController {
         return userService.delete(userId);
     }
 
-
+    @GetMapping("/getOrder/{userId}")
+    @ApiOperation("Id查询用户订单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户Id", dataType = "Integer"),
+    })
+    public ResultVO queryOrder(@PathVariable Integer userId) {
+        return userService.getOrder(userId);
+    }
 }

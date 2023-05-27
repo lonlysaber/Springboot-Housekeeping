@@ -17,11 +17,11 @@ public interface OrderService {
     ResultVO queryCondition(Order order);
 
 
-    ResultVO getOrder(Integer orderId);
-
-    ResultVO getCollect(Integer orderId);
-
-    ResultVO getEvaluate(Integer uerId);
+//    ResultVO getOrder(Integer orderId);
+//
+//    ResultVO getCollect(Integer orderId);
+//
+//    ResultVO getEvaluate(Integer uerId);
 
     ResultVO getAllOrder(OrderVO orderVO);
 }

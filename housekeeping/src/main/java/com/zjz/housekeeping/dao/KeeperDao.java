@@ -1,6 +1,7 @@
 package com.zjz.housekeeping.dao;
 
 import com.zjz.housekeeping.module.entity.Keeper;
+import com.zjz.housekeeping.module.entity.Order;
 import com.zjz.housekeeping.module.entity.User;
 import com.zjz.housekeeping.module.vo.KeeperVO;
 import com.zjz.housekeeping.module.vo.UserVO;
@@ -29,4 +30,6 @@ public interface KeeperDao {
     List<Integer> getCartCategory(Integer userId);
 
     List<Integer> getCollectCategory(Integer userId);
+
+    List<Order> getOrder(Integer keeperId);
 }
